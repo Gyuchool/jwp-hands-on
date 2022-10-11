@@ -55,13 +55,13 @@ class Stage1Test {
      * 격리 수준에 따라 어떤 현상이 발생하는지 테스트를 돌려 직접 눈으로 확인하고 표를 채워보자.
      * + : 발생
      * - : 발생하지 않음
-     *   Read phenomena | Dirty reads
+     *   Read phenomena | Dirty reads : 더러운거 읽었다. 즉, commit이 되기 전에 읽었다!!!
      * Isolation level  |
      * -----------------|-------------
-     * Read Uncommitted |
-     * Read Committed   |
-     * Repeatable Read  |
-     * Serializable     |
+     * Read Uncommitted |      o
+     * Read Committed   |      x
+     * Repeatable Read  |      x
+     * Serializable     |      x
      */
     @Test
     void dirtyReading() throws SQLException {
@@ -81,7 +81,7 @@ class Stage1Test {
             final var subConnection = dataSource.getConnection();
 
             // 적절한 격리 레벨을 찾는다.
-            final int isolationLevel = Connection.TRANSACTION_NONE;
+            final int isolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED;
 
             // 트랜잭션 격리 레벨을 설정한다.
             subConnection.setTransactionIsolation(isolationLevel);
@@ -108,13 +108,13 @@ class Stage1Test {
      * 격리 수준에 따라 어떤 현상이 발생하는지 테스트를 돌려 직접 눈으로 확인하고 표를 채워보자.
      * + : 발생
      * - : 발생하지 않음
-     *   Read phenomena | Non-repeatable reads
+     *   Read phenomena | Non-repeatable reads : 반복적으로 읽으면 다른 값이 나온다(커밋 전과 후에따라)
      * Isolation level  |
      * -----------------|---------------------
-     * Read Uncommitted |
-     * Read Committed   |
-     * Repeatable Read  |
-     * Serializable     |
+     * Read Uncommitted |       x
+     * Read Committed   |       x
+     * Repeatable Read  |       o
+     * Serializable     |       o
      */
     @Test
     void noneRepeatable() throws SQLException {
@@ -130,7 +130,7 @@ class Stage1Test {
         connection.setAutoCommit(false);
 
         // 적절한 격리 레벨을 찾는다.
-        final int isolationLevel = Connection.TRANSACTION_NONE;
+        final int isolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
 
         // 트랜잭션 격리 레벨을 설정한다.
         connection.setTransactionIsolation(isolationLevel);
@@ -170,13 +170,13 @@ class Stage1Test {
      * 격리 수준에 따라 어떤 현상이 발생하는지 테스트를 돌려 직접 눈으로 확인하고 표를 채워보자.
      * + : 발생
      * - : 발생하지 않음
-     *   Read phenomena | Phantom reads
+     *   Read phenomena | Phantom reads : innodb에서는 nextKey락으로 lock을 설정한다. 이를 통해 Repeatable Read로도 팬텀리드를 피한다.
      * Isolation level  |
      * -----------------|--------------
-     * Read Uncommitted |
-     * Read Committed   |
-     * Repeatable Read  |
-     * Serializable     |
+     * Read Uncommitted |      x
+     * Read Committed   |      x
+     * Repeatable Read  |      x
+     * Serializable     |      o
      */
     @Test
     void phantomReading() throws SQLException {
@@ -197,7 +197,7 @@ class Stage1Test {
         connection.setAutoCommit(false);
 
         // 적절한 격리 레벨을 찾는다.
-        final int isolationLevel = Connection.TRANSACTION_NONE;
+        final int isolationLevel = Connection.TRANSACTION_SERIALIZABLE;
 
         // 트랜잭션 격리 레벨을 설정한다.
         connection.setTransactionIsolation(isolationLevel);
