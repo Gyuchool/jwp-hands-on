@@ -21,6 +21,64 @@ class AppTest {
      * - http call count
      * - 테스트 결과값
      */
+    /**
+     * server:
+     *   tomcat:
+     *     accept-count: 1
+     *     max-connections: 1
+     *     threads:
+     *       max: 2 일 때,
+     * 2022-09-07 01:14:12.885  INFO 2784 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 1
+     * 2022-09-07 01:14:14.519  INFO 2784 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 2
+     * 2022-09-07 01:14:15.037  INFO 2784 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 3
+     * 2022-09-07 01:14:15.567  INFO 2784 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 4
+     * 2022-09-07 01:14:16.104  INFO 2784 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 5
+     *
+     * 2022-09-07 01:20:31.329  INFO 3052 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 1
+     * 2022-09-07 01:20:32.917  INFO 3052 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 2
+     * 2022-09-07 01:20:33.441  INFO 3052 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 3
+     * 2022-09-07 01:20:33.983  INFO 3052 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 4
+     *
+     * server:
+     *   tomcat:
+     *     accept-count: 1
+     *     max-connections: 1
+     *     threads:
+     *       max: 5 일때,
+     *2022-09-07 01:19:31.212  INFO 8088 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 1
+     * 2022-09-07 01:19:32.797  INFO 8088 --- [nio-8080-exec-3] concurrency.stage2.SampleController      : http call count : 2
+     *
+     * server:
+     *   tomcat:
+     *     accept-count: 2
+     *     max-connections: 1
+     *     threads:
+     *       max: 2
+     *
+     *       2022-09-07 01:21:33.424  INFO 15424 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 1
+     * 2022-09-07 01:21:35.314  INFO 15424 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 2
+     * 2022-09-07 01:21:35.829  INFO 15424 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 3
+     * 2022-09-07 01:21:36.346  INFO 15424 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 4
+     *
+     * server:
+     *   tomcat:
+     *     accept-count: 1
+     *     max-connections: 50
+     *     threads:
+     *       max: 2
+     *
+     * 2022-09-07 01:24:20.135  INFO 7052 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 12
+     * 2022-09-07 01:24:20.135  INFO 7052 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 11
+     * 2022-09-07 01:24:20.641  INFO 7052 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 13
+     * 2022-09-07 01:24:20.641  INFO 7052 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 14
+     * 2022-09-07 01:24:21.159  INFO 7052 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 16
+     * 2022-09-07 01:24:21.159  INFO 7052 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 15
+     * 2022-09-07 01:24:21.680  INFO 7052 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 18
+     * 2022-09-07 01:24:21.680  INFO 7052 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 17
+     * 2022-09-07 01:24:22.200  INFO 7052 --- [nio-8080-exec-2] concurrency.stage2.SampleController      : http call count : 19
+     * 2022-09-07 01:24:22.200  INFO 7052 --- [nio-8080-exec-1] concurrency.stage2.SampleController      : http call count : 20
+     * @throws Exception
+     */
     @Test
     void test() throws Exception {
         final var NUMBER_OF_THREAD = 10;
